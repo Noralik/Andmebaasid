@@ -1,1 +1,20 @@
-
+--("-- = kommentaar")
+-- SQL Server Managment Stuudio
+--(localdb)\mssqllocaldb
+--Authentication: 
+  -- Windows Auth -- admini õigused localhostis
+  -- SQL Server Auth -- varem loodud kasutajad
+-- New Query
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--

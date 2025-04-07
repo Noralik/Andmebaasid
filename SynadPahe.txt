@@ -2,7 +2,7 @@
 -------------------------------------------------------- Обязательное
 Andmed - данные
 Haldus - обслуживание // Администрирование (Administreerimine)
-Andmebaaside haldussüsteemid - Система управление БД(базза данных) -- СУБД (суистема урпавление) -SQL Server / JaramirDB/phpMyAdmin/Localhost
+Andmebaaside haldussüsteemid - Система управление БД(базза данных) -- СУБД (суистема урпавление) -SQL Server / mariaDB/phpMyAdmin/Localhost
 --------------------------------------------------------
 Tabel -таблица
 Rida=Kirje - строка // запись

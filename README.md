@@ -25,16 +25,16 @@ Fundamentals of Database Systems TiTpv23
 2. **Numerical** (integers) - int, bigint, smallint, decimal(5,2) - 5 in total, 2 after the decimal point
    Examples: age, salary, temperature, cost, height, etc.
 3. **Date** - DATE, TIME, date/time
-   Examples:
+   Examples: date of birth, meeting time, order date, event start/time
 4. **Logical** - bit, bool, boolean
-   Examples:
+   Examples: isActivated, isRequired, isCompleted, isDone
 
 ## Constraints
 1. Primary Key - prevents or disallows duplicate values
 2. UNIQUE - uniqueness
 3. NOT NULL - disallows null values
 4. Foreign Key - can only use values from another table
-5. 
+5. CHECK - allows only values defined by the check constraint
 
 # Базы данных
 Основы систем баз данных TiTpv23
@@ -44,13 +44,13 @@ Fundamentals of Database Systems TiTpv23
 2. **Числовые** (целые числа) - int, bigint, smallint, decimal(5,2) - 5 всего, 2 после запятой
    Примеры: возраст, зарплата, температура, стоимость, рост и т.д.
 3. **Дата** - DATE, TIME, date/time
-   Примеры:
+   Примеры: дата рождения, время встречи, дата заказа, начало/время события
 4. **Логические** - bit, bool, boolean
-   Примеры:
+   Примеры: isActivated, isRequired, isCompleted, isDone
 
 ## Ограничения
 1. Primary Key - не позволяет добавлять дублирующиеся значения
 2. UNIQUE - уникальность
 3. NOT NULL - не позволяет значениям быть пустыми
 4. Foreign Key - может использовать только значения из другой таблицы
-5. 
+5. CHECK - позволяет вводить только значения, определенные в ограничении check (мужчина или женщина)

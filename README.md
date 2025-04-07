@@ -6,16 +6,16 @@ Andmebaasisüsteemide alused TiTpv23
 2. **ARVULISED** (чесловые) - int, bigint, smallint, decimal(5,2) - 5 kokku, 2-peale komat
    Näited: vanus, palk, temperatuur, kall, pikkus, jne.
 3. **Kuupäeva** - DATE, TIME, date/time
-   Näited:
+   Näited: sünniaeg, kohtumise aeg, tellimuse kuupäev, sündmuse algus/aeg
 4. **Loogilised** - bit,bool,boolean
-   Näited:
+   Näited:kasOnAktiveeritud, kasOnKohustuslik, kasOnLõpetatud, kasTehtud
 
 ## Piiranguid - Ограничение
 1. Primary key - ei anna või võimalust lisada topelt väärtused
 2. UNIQUE - unikaalsus
 3. NOT NULL ei lubada tühjad väärtused
 4. Foreign Key - saab kasutada ainult teise tabeli väärtused
-5. 
+5. CHECK - saab sisestada ainult check määratud väärtused
 
 # Databases
 Fundamentals of Database Systems TiTpv23

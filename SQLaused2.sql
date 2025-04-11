@@ -7,21 +7,17 @@
 -- sql
 --
 CREATE DATABASE gutsuljak;
-
+--vali hiirega andmebaasi
 --/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-USE gutsuljak;
---tabeli loomine
-CREATE TABLE oplilane(
-	opilane_ID int Primary Key identity(1,1),
-	eesnimi varchar(25),
-	perenimi varchar(25) Unique,
-	synniaeg date,
-	aadress TEXT,
-	opilaskodu bit
-);
--- select table
-SELECT * FROM oplilane;
+
+CREATE TABLE oplilane( 
+	opilane_ID int Primary Key AUTO_INCREMENT, 
+	eesnimi varchar(25), 
+	perenimi varchar(25) Unique, 
+	synniaeg date, 
+	aadress TEXT, 
+	opilaskodu bit );
 
 --tabeli kustutamine 
 DROP table oplilane;
@@ -39,7 +35,7 @@ VALUES
 
 --identity(1,1) автоматический счёт от 1 и до ...
 CREATE TABLE ryhm(
-	ryhm_ID int not null Primary Key identity(1,1),
+	ryhm_ID int not null Primary Key AUTO_INCREMENT
 	ryhm varchar(10) unique,
 	osakond varchar(20)
 );

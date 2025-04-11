@@ -143,3 +143,12 @@ VALUES
 	('Andrey', 'Lobanov', '59634512'),
 	('Rein', 'Ausmees', '53489708'),
 	('Rein', 'Ausmees', '53489708');
+
+SELECT o.nimi, o.perenimi, o.telefon
+FROM opetaja o
+JOIN hinne h ON o.opilane_ID = h.opilane_ID;
+
+
+SELECT * FROM ryhm
+UPDATE ryhm SET opetajaID = '1' WHERE ryhm.ryhm_ID = 1;
+UPDATE ryhm SET opetajaID = '5' WHERE ryhm.ryhm_ID = 3;

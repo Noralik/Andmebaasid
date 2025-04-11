@@ -83,7 +83,7 @@ select * from ryhm
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CREATE TABLE hinne(
-	hinne_ID int not null Primary Key identity(1,1),
+	hinne_ID int not null Primary AUTO_INCREMENT,
 	opilane_ID int,
 	hinne int,
 	oppeaine VARCHAR(20)
@@ -118,3 +118,28 @@ select * from hinne;
 
 -- alter table oplilane drop column hinneID;
 -- delete from hinne where eesnimi = 'Gerald';
+
+
+CREATE TABLE opetaja(
+	opetaja_ID int not null Primary AUTO_INCREMENT,
+	nimi VARCHAR(25),
+	perenimi VARCHAR(35),
+	telefon VARCHAR(20)
+);
+
+select * from ryhm 
+select * from opetaja
+
+ALTER TABLE ryhm ADD opetajaID int;
+
+ALTER TABLE ryhm 
+ADD FOREIGN KEY (opetajaID) REFERENCES opetaja(opetaja_ID);
+
+INSERT INTO opetaja (nimi, perenimi, telefon)
+VALUES 
+	('Jekaterina', 'Rätsep', '55978151'),
+	('Jekaterina', 'Rätsep', '55978151'),
+	('Andrey', 'Lobanov', '59634512'),
+	('Andrey', 'Lobanov', '59634512'),
+	('Rein', 'Ausmees', '53489708'),
+	('Rein', 'Ausmees', '53489708');

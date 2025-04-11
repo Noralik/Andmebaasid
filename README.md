@@ -56,5 +56,6 @@ Fundamentals of Database Systems TiTpv23
 5. CHECK - позволяет вводить только значения, определенные в ограничении check (мужчина или женщина)
 
 Piltit:
-1) ![image](https://github.com/user-attachments/assets/353c7d74-6d42-4739-bc38-a199ccdb9a55)
+1) ![image](https://github.com/user-attachments/assets/69acd22a-8b08-4fba-a51d-a4c4906c927f)
+
 

@@ -54,3 +54,7 @@ Fundamentals of Database Systems TiTpv23
 3. NOT NULL - не позволяет значениям быть пустыми
 4. Foreign Key - может использовать только значения из другой таблицы
 5. CHECK - позволяет вводить только значения, определенные в ограничении check (мужчина или женщина)
+
+Piltit:
+1) ![image](https://github.com/user-attachments/assets/353c7d74-6d42-4739-bc38-a199ccdb9a55)
+

@@ -60,3 +60,11 @@ EXEC uuenaLinn 0.05;
 DROP Procedure uuenaLinn;
 UPDATE linnad SET elanikeArv=20000 WHERE linnID=2;
 SELECT * FROM linnad;
+
+-- protseedur " 'search film' 1 täht
+@taht CHAR 1
+BEGIN
+	SELECT filmNimetus, pikkus
+    FROM film
+    WHERE filmNimetus LIKE CONCAT(taht, '%');
+END

@@ -88,3 +88,25 @@ PREPARE STMT FROM @sqltegevus;
 EXECUTE STMT;
 
 END;
+
+
+--/////////////////////////////////////////////////////////////////////////////////////////////
+-- pikkus
+	--pikkus_val INT
+BEGIN
+DECLARE today TIMESTAMP DEFAULT CURRENT_DATE;
+	SELECT today, filmNimetus, pikkus
+    FROM film
+    WHERE pikkus < pikkus_val;
+END
+
+-- FilmType search
+-- 2d film... get_film_by_type
+	-- type VARCHAR 3
+BEGIN
+SELECT f.filmNimetus, t.filmtype
+FROM film f
+INNER JOIN filmtype t ON f.filmtypeID=t.filmTypeID
+AND t.filmType= type;
+END
+

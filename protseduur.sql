@@ -110,3 +110,12 @@ INNER JOIN filmtype t ON f.filmtypeID=t.filmTypeID
 AND t.filmType= type;
 END
 
+-- UPDATE RESIISOR
+-- Dont work :(
+BEGIN
+    SELECT * FROM rezisoor;
+    UPDATE rezisoor
+    SET name = eesnimi, perenimi = perenimi
+    WHERE rezisoorID = @rezisoorID;
+    SELECT * FROM rezisoor;
+END

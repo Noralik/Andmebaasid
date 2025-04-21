@@ -68,3 +68,23 @@ BEGIN
     FROM film
     WHERE filmNimetus LIKE CONCAT(taht, '%');
 END
+--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-- muudatus add/drop column
+--ADD column
+	--tabelinimi VARCHAR 25, veerunimi VARCHAR 25, tyyp VARCHAR 25
+BEGIN
+
+set @sqltegevus=concat('ALTER TABLE ', tabelinimi, ' ADD COLUMN ', veerunimi, ' ', tyyp);
+PREPARE STMT FROM @sqltegevus;
+EXECUTE STMT;
+
+END
+--DROP column
+	--tabelinimi VARCHAR 25, veerunimi VARCHAR 25
+BEGIN
+
+set @sqltegevus=concat('ALTER TABLE ', tabelinimi, ' DROP COLUMN ', veerunimi);
+PREPARE STMT FROM @sqltegevus;
+EXECUTE STMT;
+
+END;

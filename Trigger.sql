@@ -88,3 +88,110 @@ update puud SET pikkus=99, aasta=2000
 WHERE puuId=7;
 select * from puud;
 select * from logi; 
+
+/*LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL*/
+/*LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL*/
+/*LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL*/
+/*LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL*/
+
+
+-- Create product_audits table
+CREATE TABLE product_audits(
+    change_id INT IDENTITY PRIMARY KEY,
+    product_id INT NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    brand_id INT NOT NULL,
+    category_id INT NOT NULL,
+    model_year SMALLINT NOT NULL,
+    list_price DEC(10,2) NOT NULL,
+    updated_at DATETIME NOT NULL,
+    operation CHAR(3) NOT NULL,
+    CHECK(operation = 'INS' OR operation = 'DEL')
+);
+
+-- Create product table
+CREATE TABLE product (
+    product_id INT IDENTITY PRIMARY KEY,
+    product_name VARCHAR(255) NOT NULL,
+    brand_id INT NOT NULL,
+    category_id INT NOT NULL,
+    model_year SMALLINT NOT NULL,
+    list_price DECIMAL(10, 2) NOT NULL
+);
+
+
+CREATE TRIGGER trg_product_audit
+ON product
+AFTER INSERT, DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO product_audits(
+        product_id, 
+        product_name,
+        brand_id,
+        category_id,
+        model_year,
+        list_price, 
+        updated_at, 
+        operation
+    )
+    SELECT
+        i.product_id,
+        i.product_name, 
+        i.brand_id,  
+        i.category_id,
+        i.model_year,
+        i.list_price,
+        GETDATE(),
+        'INS'
+    FROM inserted i;
+
+    INSERT INTO product_audits(
+        product_id, 
+        product_name,
+        brand_id,
+        category_id,
+        model_year,
+        list_price, 
+        updated_at, 
+        operation
+    )
+    SELECT
+        d.product_id,
+        d.product_name, 
+        d.brand_id, 
+        d.category_id, 
+        d.model_year, 
+        d.list_price,
+        GETDATE(),
+        'DEL'
+    FROM deleted d;
+END;
+
+
+INSERT INTO product( 
+    product_name, 
+    brand_id, 
+    category_id, 
+    model_year, 
+    list_price
+)
+VALUES (
+    'Test product',
+    1,
+    1,
+    2018,
+    599
+);
+
+SELECT * FROM product_audits;
+
+DELETE FROM 
+    product
+WHERE 
+    product_id = 1;
+
+
+

@@ -17,3 +17,12 @@ Loo - Создай
 --------------------------------------------------------
 PRIMARY KEY - primaarne võti - первичный ключ
 FOREIGN - Välis võti - внешний // вторичный ключ
+
+veeru lisamine - добавить столбец  ALTER TABLE ... ADD ...
+veeru kustutamine  - добавить столбец ALTER TABLE ... DROP ...
+
+andmete lisamine - INSERT INTO ... VALUES ...
+andmete lisamine - DELETE FROM
+
+tabeli lisamine - CREATE TABLE
+tabeli lisamine - DROP TABLE

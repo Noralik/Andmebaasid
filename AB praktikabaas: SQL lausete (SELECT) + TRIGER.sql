@@ -9,12 +9,13 @@ telefon VARCHAR (20)
 );
 
 CREATE TABLE Praktikajuhendaja (
-    praktikajuhendajaID INT PRIMARY KEY, 
+    praktikajuhendajaID INT PRIMARY, 
     eesnimi VARCHAR(50), 
     perekonnanimi VARCHAR(50), 
     synniaeg DATE, 
     telefon VARCHAR(20)
 );
+drop table Praktikajuhendaja;
 
 
 CREATE TABLE praktikabaas (
@@ -145,10 +146,10 @@ BEGIN
     FROM inserted;
 END;
 
--- dorobotaniy     
+-- улучшеная версия
 USE [sigmas]
 GO
-/****** Object:  Trigger [dbo].[trg_Insert_Praktikabaas_logi]    Script Date: 12.05.2025 12:15:51 ******/
+/****** Object:  Trigger [dbo].[trg_Insert_Praktikabaas_logi]    Script Date: 12.05.2025 12:57:15 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -175,6 +176,7 @@ BEGIN
 	inner join firma on inserted.firmaID=firma.firmaID
 	inner join Praktikajuhendaja on inserted.juhendajaID=Praktikajuhendaja.praktikajuhendajaID;
 END;
+
 -- 2 triger
 CREATE TRIGGER trg_Delete_Praktikabaas_logi
 ON praktikabaas
@@ -226,7 +228,7 @@ select * from Praktikabaas;
 -- ADD
 INSERT INTO praktikabaas(firmaID, praktikatingimused, arvutiprogramm, juhendajaID)
 VALUES 
-    (5, 'Teadusprojekt', 'Python', 5);
+    (4, 'Teadusprojekt', 'Python', 5);
 select * from Praktikabaas_logi;
 -- DELETE
 DELETE FROM praktikabaas WHERE praktikabaasID=5;
@@ -262,6 +264,16 @@ INSERT INTO praktikajuhendaja (eesnimi, perekonnanimi, synniaeg, telefon)
 VALUES ('Мария', 'Тамм', '2050-01-01', '5551234');
 -- rabotusie
 INSERT INTO praktikajuhendaja (eesnimi, perekonnanimi, synniaeg, telefon)
-VALUES ('Яан', 'Каск', '1990-05-01', '5555678');
-select * from Praktikajuhendaja
+VALUES ('signa', 'guy', '1990-05-01', '5555678');
 
+
+select * from Praktikajuhendaja;
+
+
+select * from Praktikabaas_logi;
+
+--
+deny select on Praktikabaas_logi to aurora;
+grant select on firma to aurora;
+grant select, update on praktikabaas to aurora;
+grant select on Praktikajuhendaja to aurora;

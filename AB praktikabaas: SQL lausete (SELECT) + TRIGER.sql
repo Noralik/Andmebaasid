@@ -205,19 +205,22 @@ SET praktikatingimused = 'LinuxBSD', arvutiprogramm = 'C#'
 WHERE praktikabaasID = 6;
 
 
--- 5 triger CREATE TRIGGER trg_Check_Juhendaja_Synniaeg
-ON praktikajuhendaja
-INSTEAD OF INSERT
-AS
-BEGIN
-    IF EXISTS (SELECT 1 FROM inserted WHERE synniaeg > GETDATE())
-    BEGIN
-        RAISERROR('Sünniaeg ei tohi olla tulevikus.', 16, 1);
-    END
-    ELSE
-    BEGIN
-        INSERT INTO praktikajuhendaja (eesnimi, perekonnanimi, synniaeg, telefon)
-        SELECT eesnimi, perekonnanimi, synniaeg, telefon
-        FROM inserted;
-    END
-END;
+-- 5 triger
+CREATE TRIGGER trg_Check_Juhendaja_Synniaeg -- Создаёт тригер
+ON praktikajuhendaja -- Триггер применяется к таблице praktikajuhendaja.
+INSTEAD OF INSERT -- Тип триггера — INSTEAD OF INSERT, что означает, что триггер сработает вместо стандартной операции INSERT в таблицу.
+AS -- Указывает начало блока SQL-кода, который будет выполнен при активации триггера
+BEGIN -- Начало блока кода, который выполняется, если триггер сработал.
+    IF EXISTS (SELECT 1 FROM inserted WHERE synniaeg > GETDATE()) --Эта строка проверяет, есть ли в таблице inserted строки, у которых дата рождения больше текущей даты.
+    BEGIN -- Если условие в предыдущей строке выполняется, начинается блок кода, который будет выполнен.
+        RAISERROR('Sünniaeg ei tohi olla tulevikus.', 16, 1); -- Если в предыдущей проверке обнаружены строки с некорректной датой рождения, будет выброшена ошибка с сообщением и кодом ошибки 16 и состоянием 1.
+    END -- Завершение блока кода, выполняющегося в случае ошибки.
+    ELSE -- Если условие проверки на дату не выполнено (то есть все даты рождения валидны), выполняется блок кода после ELSE.
+    BEGIN -- Начало блока, который будет выполнен, если дата рождения не больше текущей даты.
+        INSERT INTO praktikajuhendaja (eesnimi, perekonnanimi, synniaeg, telefon) -- INSERT INTO praktikajuhendaja Здесь происходит вставка данных в таблицу praktikajuhendaja. Вставляются значения для столбцов eesnimi, perekonnanimi, synniaeg и telefon
+        SELECT eesnimi, perekonnanimi, synniaeg, telefon -- SELECT eesnimi, perekonnanimi, synniaeg, telefon FROM inserted; Вставка данных из виртуальной таблицы inserted, которая содержит те же данные, что и попытка вставки в таблицу. Данные вставляются в таблицу praktikajuhendaja.
+        FROM inserted; -- Строка FROM inserted; в контексте триггера в SQL означает, что данные, которые были попыткой вставки в таблицу, доступны через виртуальную таблицу inserted
+    END -- Завершение блока кода, который выполняется при корректной вставке данных.
+END; -- Завершение блока кода триггера в целом.
+-- Если дата рождения (поле synniaeg) для новой строки в таблице praktikajuhendaja больше текущей даты, то вставка данных будет отклонена, и будет сгенерирована ошибка.
+-- Если дата рождения валидна, то данные вставляются в таблицу.

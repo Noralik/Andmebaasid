@@ -277,3 +277,15 @@ deny select on Praktikabaas_logi to aurora;
 grant select on firma to aurora;
 grant select, update on praktikabaas to aurora;
 grant select on Praktikajuhendaja to aurora;
+
+
+-- user -aurora
+select * from Praktikabaas_logi;
+
+select * from firma;
+select * from praktikabaas;
+
+
+UPDATE praktikabaas 
+SET praktikatingimused = 'ddd', arvutiprogramm = 'Cdd'
+WHERE praktikabaasID = 9;

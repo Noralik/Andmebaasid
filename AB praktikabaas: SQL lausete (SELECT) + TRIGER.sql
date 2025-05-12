@@ -144,6 +144,37 @@ BEGIN
         )
     FROM inserted;
 END;
+
+-- dorobotaniy     
+USE [sigmas]
+GO
+/****** Object:  Trigger [dbo].[trg_Insert_Praktikabaas_logi]    Script Date: 12.05.2025 12:15:51 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER TRIGGER [dbo].[trg_Insert_Praktikabaas_logi]
+ON [dbo].[praktikabaas]
+FOR INSERT
+AS
+BEGIN
+    INSERT INTO Praktikabaas_logi (kasutaja, tegevus, aeg, andmed)
+    SELECT
+        SYSTEM_USER,    
+        'praktikabaas on lisatud', 
+        GETDATE(),                 
+        CONCAT(
+            firma.firmanimi, ', ', 
+			firma.aadress, ', ', 
+			Praktikajuhendaja.perekonnanimi, ', ',
+			Praktikajuhendaja.eesnimi, ', ',
+            inserted.praktikatingimused, ', ',
+            inserted.arvutiprogramm
+        )
+    FROM inserted 
+	inner join firma on inserted.firmaID=firma.firmaID
+	inner join Praktikajuhendaja on inserted.juhendajaID=Praktikajuhendaja.praktikajuhendajaID;
+END;
 -- 2 triger
 CREATE TRIGGER trg_Delete_Praktikabaas_logi
 ON praktikabaas

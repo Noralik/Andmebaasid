@@ -223,4 +223,14 @@ BEGIN -- Начало блока кода, который выполняется
     END -- Завершение блока кода, который выполняется при корректной вставке данных.
 END; -- Завершение блока кода триггера в целом.
 -- Если дата рождения (поле synniaeg) для новой строки в таблице praktikajuhendaja больше текущей даты, то вставка данных будет отклонена, и будет сгенерирована ошибка.
--- Если дата рождения валидна, то данные вставляются в таблицу.
+-- Если дата рождения валидна, то данные вставляются в таблицу.Ы
+
+-- Kontoll
+-- ne rabotusie 
+INSERT INTO praktikajuhendaja (eesnimi, perekonnanimi, synniaeg, telefon)
+VALUES ('Мария', 'Тамм', '2050-01-01', '5551234');
+-- rabotusie
+INSERT INTO praktikajuhendaja (eesnimi, perekonnanimi, synniaeg, telefon)
+VALUES ('Яан', 'Каск', '1990-05-01', '5555678');
+select * from Praktikajuhendaja
+

@@ -41,71 +41,196 @@ CREATE TABLE logi (
     andmed TEXT
 );
 
-CREATE TRIGGER Delete_logi
-ON Voistlus
-FOR DELETE
-AS
-BEGIN
-    INSERT INTO logi (kasutaja, kuupaev, tegevus, andmed)
-    SELECT
-        SYSTEM_USER,
-        GETDATE(),
-        'deletes',
-        CONCAT(
-            'Kustutatud andmed: ',
-            'VoistlusID=', deleted.VoistlusID, ', ',
-            'VoistlusNimi=', deleted.VoistlusNimi, ', ',
-            'OsalejateArv=', deleted.OsalejateArv, ', ',
-            'TurniirID=', deleted.TurniirID
-        )
-    FROM deleted;
-END;
-/*PEREHOD*/
-CREATE TRIGGER Insert_logi
-ON Voistlus
-FOR INSERT
-AS
-BEGIN
-    INSERT INTO logi (kasutaja, kuupaev, tegevus, andmed)
-    SELECT
-        SYSTEM_USER,
-        GETDATE(),
-        'Lootes',
-        CONCAT(
-            'Lisatud andmed: ',
-            'VoistlusID=', inserted.VoistlusID, ', ',
-            'VoistlusNimi=', inserted.VoistlusNimi, ', ',
-            'OsalejateArv=', inserted.OsalejateArv, ', ',
-            'TurniirID=', inserted.TurniirID
-        )
-    FROM inserted;
-END;
 /*PEREHOD*/
 SELECT * FROM logi;
 
-INSERT INTO Turniir (TurniirNimi)
-VALUES ('ddss');
-INSERT INTO Voistlus (VoistlusNimi, OsalejateArv, TurniirID)
-VALUES ('8888km ujuma', 8, 3);
-
-
-
-/*FOR KASUTAJA*/
-INSERT INTO Turniir (TurniirNimi)
-VALUES ('Kevadturniir');
+INSERT INTO Turniir (TurniirNimi) VALUES ('EEE');
+INSERT INTO Turniir (TurniirNimi) VALUES ('KKK');
 
 INSERT INTO Voistlus (VoistlusNimi, OsalejateArv, TurniirID)
-VALUES ('100m jooks', 8, 1);
+VALUES ('100m jooks', 8, 3);
 
-INSERT INTO Turniir (TurniirNimi)
-VALUES ('Sigmassse');
 INSERT INTO Voistlus (VoistlusNimi, OsalejateArv, TurniirID)
-VALUES ('100m jooks', 8, 2);
+VALUES ('200m jooks', 10, 4);
 
+
+INSERT INTO Voistlus (VoistlusNimi, OsalejateArv, TurniirID)
+VALUES ('500m jooks', 6, 999);
 
 DELETE FROM Voistlus WHERE VoistlusID = 3;
 
-SELECT * FROM Voistlus;
-SELECT * FROM Turniir;
-SELECT * FROM logi;
 
+select * from Osaleja
+INSERT INTO Osaleja (OsalejaNimi)
+	VALUES ('ee');
+
+	select * from Voistlus
+UPDATE Osaleja
+SET VoistlusID = 4
+WHERE OsalejaNimi = 'FFF';
+
+
+
+
+
+/*OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO*/
+CREATE TRIGGER Insert_Osaleja
+ON Osaleja
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO logi (kasutaja, tegevus, andmed)
+    SELECT
+        SYSTEM_USER,
+        'Osaleja lisatud',
+        CONCAT(
+            'Osaleja: ', i.OsalejaNimi, '; ',
+            'Võistlus: ', v.VoistlusNimi
+        )
+    FROM inserted i
+    INNER JOIN Voistlus v ON i.VoistlusID = v.VoistlusID
+END;
+/*PEREHOD*/ 
+CREATE TRIGGER Update_Osaleja
+ON Osaleja
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO logi (kasutaja, tegevus, andmed)
+    SELECT
+        SYSTEM_USER,
+        'Osaleja uuendatud',
+        CONCAT(
+            'Vanad andmed: OsalejaID=', d.OsalejaID, '; OsalejaNimi=', d.OsalejaNimi, '; VoistlusID=', CAST(d.VoistlusID AS NVARCHAR(10)), 
+			/*"CAST(d.VoistlusID AS NVARCHAR(10)" 
+			Это преобразование нужно для того, чтобы числовое поле VoistlusID можно было соединить с остальными текстовыми значениями в единую строку и записать в поле andmed.*/
+            ' | Uued andmed: OsalejaID=', i.OsalejaID, '; OsalejaNimi=', i.OsalejaNimi, '; VoistlusID=', CAST(i.VoistlusID AS NVARCHAR(10))
+        )
+    FROM inserted i
+    INNER JOIN deleted d ON i.OsalejaID = d.OsalejaID;
+END;
+drop trigger Update_Osaleja
+/*PEREHOD*/
+CREATE TRIGGER Delete_Osaleja
+ON Osaleja
+AFTER DELETE
+AS
+BEGIN
+    INSERT INTO logi (kasutaja, tegevus, andmed)
+    SELECT
+        SYSTEM_USER,
+        'Osaleja kustutatud',
+        CONCAT(
+            'Kustutatud osaleja: ', d.OsalejaNimi, '; ',
+            'Võistlus: ', v.VoistlusNimi
+        )
+    FROM deleted d
+    INNER JOIN Voistlus v ON d.VoistlusID = v.VoistlusID
+END;
+/*OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO*/
+CREATE TRIGGER Insert_Turniir
+ON Turniir
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO logi (kasutaja, tegevus, andmed)
+    SELECT
+        SYSTEM_USER,
+        'Turniir lisatud',
+        CONCAT('Turniir: ', TurniirNimi)
+    FROM inserted;
+END;
+/*PEREHOD*/
+CREATE TRIGGER Update_Turniir
+ON Turniir
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO logi (kasutaja, tegevus, andmed)
+    SELECT
+        SYSTEM_USER,
+        'Turniir uuendatud',
+        CONCAT('Uus nimi: ', TurniirNimi)
+    FROM inserted;
+END;
+/*PEREHOD*/
+CREATE TRIGGER Delete_Turniir
+ON Turniir
+AFTER DELETE
+AS
+BEGIN
+    INSERT INTO logi (kasutaja, tegevus, andmed)
+    SELECT
+        SYSTEM_USER,
+        'Turniir kustutatud',
+        CONCAT('Kustutatud turniir: ', TurniirNimi)
+    FROM deleted;
+END;
+/*OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO*/
+CREATE TRIGGER Insert_Voistlus
+ON Voistlus
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO logi (kasutaja, tegevus, andmed)
+    SELECT
+        SYSTEM_USER,
+        'Võistlus lisatud',
+        CONCAT(
+            'Võistlus: ', v.VoistlusNimi, '; ',
+            'Osalejate arv: ', v.OsalejateArv, '; ',
+            'Turniir: ', t.TurniirNimi
+        )
+    FROM inserted v
+    INNER JOIN Turniir t ON v.TurniirID = t.TurniirID;
+END;
+/*PEREHOD*/
+CREATE TRIGGER Update_Voistlus
+ON Voistlus
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO logi (kasutaja, tegevus, andmed)
+    SELECT
+        SYSTEM_USER,
+        'Võistlus uuendatud',
+        CONCAT(
+            'Võistlus: ', v.VoistlusNimi, '; ',
+            'Osalejate arv: ', v.OsalejateArv, '; ',
+            'Turniir: ', t.TurniirNimi
+        )
+    FROM inserted v
+    INNER JOIN Turniir t ON v.TurniirID = t.TurniirID;
+END;
+/*PEREHOD*/
+CREATE TRIGGER Delete_Voistlus
+ON Voistlus
+AFTER DELETE
+AS
+BEGIN
+    INSERT INTO logi (kasutaja, tegevus, andmed)
+    SELECT
+        SYSTEM_USER,
+        'Võistlus kustutatud',
+        CONCAT(
+            'Võistlus: ', v.VoistlusNimi, '; ',
+            'Osalejate arv: ', v.OsalejateArv, '; ',
+            'Turniir: ', t.TurniirNimi
+        )
+    FROM deleted v
+    INNER JOIN Turniir t ON v.TurniirID = t.TurniirID;
+END;
+drop trigger Delete_Voistlus
+drop trigger Update_Voistlus
+drop trigger Insert_Voistlus
+
+
+
+
+
+
+
+
+
+
+/*Protseddur*/

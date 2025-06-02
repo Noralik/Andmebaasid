@@ -1,220 +1,212 @@
-/*CREATE DATABSE*/
-CREATE DATABASE specter;
-drop database specter;
-use specter;
-use master;
+CREATE DATABASE sigmas;
+use sigmas;
 
-/*CREATE TABELID*/
-CREATE TABLE Turniir (
-    TurniirID INT PRIMARY KEY  IDENTITY (1,1),
-    TurniirNimi VARCHAR(37)
+CREATE TABLE firma (
+firmaID INT NOT NULL PRIMARY KEY IDENTITY (1,1),
+firmanimi VARCHAR(20) unique,
+aadress VARCHAR(20),
+telefon VARCHAR (20)
+
+
 );
-/*PEREHOD*/
-CREATE TABLE Voistlus (
-    VoistlusID INT PRIMARY KEY  IDENTITY (1,1),
-    VoistlusNimi VARCHAR(52),
-    OsalejateArv INT,
-    TurniirID INT,
-    FOREIGN KEY (TurniirID) REFERENCES Turniir(TurniirID)
+
+CREATE TABLE Praktikajuhendaja (
+    praktikajuhendajaID INT PRIMARY, 
+    eesnimi VARCHAR(50), 
+    perekonnanimi VARCHAR(50), 
+    synniaeg DATE, 
+    telefon VARCHAR(20)
 );
-/*PEREHOD*/
-CREATE TABLE Osaleja (
-    OsalejaID INT PRIMARY KEY  IDENTITY (1,1),
-    OsalejaNimi VARCHAR(69),
-    VoistlusID INT,
-    FOREIGN KEY (VoistlusID) REFERENCES Voistlus(VoistlusID)
+drop table Praktikajuhendaja;
+
+
+CREATE TABLE praktikabaas (
+praktikabaasID int NOT NULL PRIMARY KEY IDENTITY(1,1),
+firmaID int,
+praktikatingimused varchar(20),
+arvutiprogramm varchar(20),
+juhendajaID int,
+FOREIGN KEY (firmaID) REFERENCES firma (firmaID),
+FOREIGN KEY (juhendajaID) REFERENCES praktikajuhendaja(praktikajuhendajaID)
 );
-/*PEREHOD*/
 
 
-/*FIRE KASUTAJA*/
-GRANT SELECT, INSERT ON Turniir TO opilaneJaramir
-GRANT SELECT, INSERT ON Voistlus TO opilaneJaramir
-GRANT SELECT, INSERT ON Osaleja TO opilaneJaramir
+-- Täida kõik tabelid 5-10 kirjetega  SQL päringu abil.
+INSERT INTO firma(firmanimi, aadress, telefon)
+VALUES 
+    ('SpqceX', 'Usa', '57841881'),
+    ('Starbaks', 'HZlenovich', '9741055'),
+    ('Audi', 'Sigmastik', '79115051'),
+    ('Memasiks', 'Lopstik', '879018150'),
+    ('slapmistik', 'Mustik', '454118499');
 
-/*Loo Logi*/
-CREATE TABLE logi (
-    id INT IDENTITY (1,1) PRIMARY KEY,
-    kasutaja VARCHAR(50),
-    kuupaev DATETIME DEFAULT CURRENT_TIMESTAMP,
-    tegevus VARCHAR(50),
-    andmed TEXT
+INSERT INTO Praktikajuhendaja(praktikajuhendajaID, eesnimi, perekonnanimi, telefon, synniaeg)
+VALUES 
+    (1, 'SpqceX', 'Usa', '57841881', '1980-05-12'),
+    (2, 'Starbaks', 'HZlenovich', '9741055', '1992-08-23'),
+    (3, 'Audi', 'Sigmastik', '79115051', '1987-12-09'),
+    (4, 'Memasiks', 'Lopstik', '879018150', '1995-03-11'),
+    (5, 'Slapmistik', 'Mustik', '454118499', '1999-11-29');
+
+
+
+
+
+
+
+
+
+
+
+
+INSERT INTO praktikabaas(firmaID, praktikatingimused, arvutiprogramm, juhendajaID)
+VALUES 
+    (1, 'Töökogemus', 'MS Office', 1),
+    (2, 'Internship', 'AutoCAD', 2),
+    (3, 'Töötuba', 'SolidWorks', 3),
+    (4, 'Projekt', 'MATLAB', 4),
+    (5, 'Teadusprojekt', 'Python', 5);
+
+
+
+
+select * from firma;
+select * from Praktikajuhendaja;
+select * from praktikabaas;
+
+-- Kontroll
+
+-- 1
+SELECT * FROM firma
+WHERE firmanimi LIKE '%a%';
+-- 2
+SELECT f.*, p.*
+FROM firma f
+JOIN praktikabaas p ON f.firmaID = p.firmaID
+ORDER BY f.firmanimi;
+-- 3
+SELECT f.firmanimi, COUNT(p.praktikabaasID) AS praktikakohti
+FROM firma f
+JOIN praktikabaas p ON f.firmaID = p.firmaID
+GROUP BY f.firmanimi;
+-- 4
+SELECT eesnimi, perekonnanimi FROM praktikajuhendaja WHERE synniaeg > '1980-01-01';
+-- 5
+SELECT MONTH(synniaeg) AS kuu, COUNT(*) AS juhendajaid
+FROM praktikajuhendaja
+GROUP BY MONTH(synniaeg)
+ORDER BY kuu;
+-- 6
+SELECT j.eesnimi, j.perekonnanimi, COUNT(p.praktikabaasID) AS praktikakohti
+FROM praktikajuhendaja j
+LEFT JOIN praktikabaas p ON j.praktikajuhendajaID = p.juhendajaID
+GROUP BY j.eesnimi, j.perekonnanimi;
+-- 7
+ALTER TABLE praktikajuhendaja
+ADD palk DECIMAL(10, 2);
+select * from Praktikajuhendaja
+-- 8 
+SELECT eesnimi, perekonnanimi, palk, palk * 0.20 AS tulumaks
+FROM praktikajuhendaja;
+-- 9
+SELECT AVG(palk) AS keskmine_palk
+FROM praktikajuhendaja;
+
+-- 10
+-- Päring 1: Kõik juhendajad, kelle palk on suurem kui 2000
+SELECT eesnimi, perekonnanimi, palk
+FROM praktikajuhendaja
+WHERE palk > 2000;
+
+-- Päring 2: Kõik firmad, kus on vähem kui 3 praktika kohta
+SELECT f.firmanimi, COUNT(p.praktikabaasID) AS praktikakohti
+FROM firma f
+JOIN praktikabaas p ON f.firmaID = p.firmaID
+GROUP BY f.firmanimi
+HAVING COUNT(p.praktikabaasID) < 3;
+
+-- Päring 3: Kõik praktikabaasid, kus kasutatakse AutoCAD programmi
+SELECT p.praktikabaasID, p.arvutiprogramm
+FROM praktikabaas p
+WHERE p.arvutiprogramm = 'AutoCAD';
+
+
+-- TRIGERID
+
+CREATE TABLE Praktikabaas_logi (
+    id INT IDENTITY(1,1) PRIMARY KEY, 
+    kasutaja VARCHAR(50), 
+    aeg DATETIME DEFAULT GETDATE(), 
+    tegevus VARCHAR(50), 
+    andmed VARCHAR(MAX)
 );
-/*PEREHOD*/
-SELECT * FROM logi;
+select * from Praktikabaas_logi
 
-INSERT INTO Turniir (TurniirNimi) VALUES ('EEE');
-INSERT INTO Turniir (TurniirNimi) VALUES ('KKK');
-
-INSERT INTO Voistlus (VoistlusNimi, OsalejateArv, TurniirID)
-VALUES ('100m jooks', 8, 3);
-
-INSERT INTO Voistlus (VoistlusNimi, OsalejateArv, TurniirID)
-VALUES ('200m jooks', 10, 4);
-
-
-INSERT INTO Voistlus (VoistlusNimi, OsalejateArv, TurniirID)
-VALUES ('500m jooks', 6, 999);
-
-DELETE FROM Voistlus WHERE VoistlusID = 3;
-
-
-
-
-
-
-/*OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO*/
-CREATE TRIGGER Insert_Osaleja
-ON Osaleja
-AFTER INSERT
+-- 1 triger
+CREATE TRIGGER trg_Insert_Praktikabaas_logi
+ON praktikabaas
+FOR INSERT
 AS
 BEGIN
-    INSERT INTO logi (kasutaja, tegevus, andmed)
+    INSERT INTO Praktikabaas_logi (kasutaja, tegevus, aeg, andmed)
     SELECT
-        SYSTEM_USER,
-        'Osaleja lisatud',
+        SYSTEM_USER,    
+        'praktikabaas on lisatud', 
+        GETDATE(),                 
         CONCAT(
-            'Osaleja: ', i.OsalejaNimi, '; ',
-            'Võistlus: ', v.VoistlusNimi, '; ',
-            'Turniir: ', t.TurniirNimi
+            inserted.firmaID, ', ',
+            inserted.praktikatingimused, ', ',
+            inserted.arvutiprogramm
         )
-    FROM inserted i
-    INNER JOIN Voistlus v ON i.VoistlusID = v.VoistlusID
-    INNER JOIN Turniir t ON v.TurniirID = t.TurniirID;
-END;
-/*PEREHOD*/ 
-CREATE TRIGGER Update_Osaleja
-ON Osaleja
-AFTER UPDATE
-AS
-BEGIN
-    INSERT INTO logi (kasutaja, tegevus, andmed)
-    SELECT
-        SYSTEM_USER,
-        'Osaleja uuendatud',
-        CONCAT(
-            'Uus osaleja: ', i.OsalejaNimi, '; ',
-            'Võistlus: ', v.VoistlusNimi, '; ',
-            'Turniir: ', t.TurniirNimi
-        )
-    FROM inserted i
-    INNER JOIN Voistlus v ON i.VoistlusID = v.VoistlusID
-    INNER JOIN Turniir t ON v.TurniirID = t.TurniirID;
-END;
-/*PEREHOD*/
-CREATE TRIGGER Delete_Osaleja
-ON Osaleja
-AFTER DELETE
-AS
-BEGIN
-    INSERT INTO logi (kasutaja, tegevus, andmed)
-    SELECT
-        SYSTEM_USER,
-        'Osaleja kustutatud',
-        CONCAT(
-            'Kustutatud osaleja: ', d.OsalejaNimi, '; ',
-            'Võistlus: ', v.VoistlusNimi, '; ',
-            'Turniir: ', t.TurniirNimi
-        )
-    FROM deleted d
-    INNER JOIN Voistlus v ON d.VoistlusID = v.VoistlusID
-    INNER JOIN Turniir t ON v.TurniirID = t.TurniirID;
-END;
-/*OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO*/
-CREATE TRIGGER Insert_Turniir
-ON Turniir
-AFTER INSERT
-AS
-BEGIN
-    INSERT INTO logi (kasutaja, tegevus, andmed)
-    SELECT
-        SYSTEM_USER,
-        'Turniir lisatud',
-        CONCAT('Turniir: ', TurniirNimi)
     FROM inserted;
-END;
-/*PEREHOD*/
-CREATE TRIGGER Update_Turniir
-ON Turniir
-AFTER UPDATE
-AS
-BEGIN
-    INSERT INTO logi (kasutaja, tegevus, andmed)
-    SELECT
-        SYSTEM_USER,
-        'Turniir uuendatud',
-        CONCAT('Uus nimi: ', TurniirNimi)
-    FROM inserted;
-END;
-/*PEREHOD*/
-CREATE TRIGGER Delete_Turniir
-ON Turniir
-AFTER DELETE
-AS
-BEGIN
-    INSERT INTO logi (kasutaja, tegevus, andmed)
-    SELECT
-        SYSTEM_USER,
-        'Turniir kustutatud',
-        CONCAT('Kustutatud turniir: ', TurniirNimi)
-    FROM deleted;
-END;
-/*OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO*/
-CREATE TRIGGER Insert_Voistlus
-ON Voistlus
-AFTER INSERT
-AS
-BEGIN
-    SET NOCOUNT ON;
 
-    INSERT INTO logi (kasutaja, tegevus, andmed)
-    SELECT
-        SYSTEM_USER,
-        'Võistlus lisatud',
-        CONCAT(
-            'Võistlus: ', v.VoistlusNimi, '; ',
-            'Osalejate arv: ', v.OsalejateArv, '; ',
-            'Turniir: ', t.TurniirNimi, '; ',
-            'Osaleja: ', o.OsalejaNimi
-        )
-    FROM inserted v
-    INNER JOIN Turniir t ON v.TurniirID = t.TurniirID
-    INNER JOIN Osaleja o ON o.VoistlusID = v.VoistlusID;
+
 END;
-drop trigger  Insert_Voistlus
-/*PEREHOD*/
-CREATE TRIGGER Update_Voistlus
-ON Voistlus
-AFTER UPDATE
+
+-- улучшеная версия
+USE [sigmas]
+GO
+/****** Object:  Trigger [dbo].[trg_Insert_Praktikabaas_logi]    Script Date: 12.05.2025 12:57:15 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER TRIGGER [dbo].[trg_Insert_Praktikabaas_logi]
+ON [dbo].[praktikabaas]
+FOR INSERT
 AS
 BEGIN
-    INSERT INTO logi (kasutaja, tegevus, andmed)
+    INSERT INTO Praktikabaas_logi (kasutaja, tegevus, aeg, andmed)
     SELECT
-        SYSTEM_USER,
-        'Võistlus uuendatud',
+        SYSTEM_USER,    
+        'praktikabaas on lisatud', 
+        GETDATE(),                 
         CONCAT(
-            'Võistlus: ', v.VoistlusNimi, '; ',
-            'Osalejate arv: ', v.OsalejateArv, '; ',
-            'Turniir: ', t.TurniirNimi
+            firma.firmanimi, ', ', 
+			firma.aadress, ', ', 
+			Praktikajuhendaja.perekonnanimi, ', ',
+			Praktikajuhendaja.eesnimi, ', ',
+            inserted.praktikatingimused, ', ',
+            inserted.arvutiprogramm
         )
-    FROM inserted v
-    INNER JOIN Turniir t ON v.TurniirID = t.TurniirID;
+    FROM inserted 
+	inner join firma on inserted.firmaID=firma.firmaID
+	inner join Praktikajuhendaja on inserted.juhendajaID=Praktikajuhendaja.praktikajuhendajaID;
 END;
-/*PEREHOD*/
-CREATE TRIGGER Delete_Voistlus
-ON Voistlus
-AFTER DELETE
+
+-- 2 triger
+CREATE TRIGGER trg_Delete_Praktikabaas_logi
+ON praktikabaas
+FOR DELETE
 AS
 BEGIN
-    INSERT INTO logi (kasutaja, tegevus, andmed)
+    INSERT INTO Praktikabaas_logi (kasutaja, tegevus, aeg, andmed)
     SELECT
         SYSTEM_USER,
-        'Võistlus kustutatud',
+        'praktikabaas on kustutatud',
+        GETDATE(),
         CONCAT(
-            'Võistlus: ', v.VoistlusNimi, '; ',
-            'Osalejate arv: ', v.OsalejateArv, '; ',
-            'Turniir: ', t.TurniirNimi
+            deleted.firmaID, ', ',
+            deleted.praktikatingimused, ', ',
+            deleted.arvutiprogramm
         )
-    FROM deleted v
-    INNER JOIN Turniir t ON v.TurniirID = t.TurniirID;
-END;

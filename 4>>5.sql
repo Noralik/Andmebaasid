@@ -234,3 +234,91 @@ drop trigger Insert_Voistlus
 
 
 /*Protseddur*/
+CREATE PROCEDURE AddOsaleja
+    @OsalejaNimi VARCHAR(69),
+    @VoistlusID INT
+AS
+BEGIN
+    INSERT INTO Osaleja (OsalejaNimi, VoistlusID)
+    VALUES (@OsalejaNimi, @VoistlusID);
+END;
+drop PROCEDURE AddOsaleja
+
+
+SELECT * FROM logi;
+select * from Osaleja;
+select * from Voistlus
+EXEC AddOsaleja @OsalejaNimi = 'Steve1', @VoistlusID = 5;
+
+CREATE PROCEDURE DeleteOsaleja
+	@OsalejaID INT
+AS
+BEGIN
+    DECLARE @OsalejaNimi VARCHAR(69);
+    DECLARE @VoistlusID INT;
+    SELECT 
+        @OsalejaNimi = OsalejaNimi,
+        @VoistlusID = VoistlusID
+    FROM Osaleja
+    WHERE OsalejaID = @OsalejaID;
+
+    DELETE FROM Osaleja
+    WHERE OsalejaID = @OsalejaID;
+END;
+
+drop procedure DeleteOsaleja
+
+SELECT * FROM logi;
+select * from Turniir;
+select * from Voistlus;
+select * from Osaleja;
+EXEC DeleteOsaleja @OsalejaID = 11;
+
+/* CAST(@VoistlusID AS NVARCHAR(10) */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select * from Turniir
+
+CREATE PROCEDURE vaaranOsaleja
+    @OsalejaNimi VARCHAR(37)
+AS
+BEGIN
+    SELECT
+        o.OsalejaNimi,
+        v.VoistlusNimi,
+        v.OsalejateArv,
+        t.TurniirNimi
+    FROM Osaleja o
+    INNER JOIN Voistlus v ON o.VoistlusID = v.VoistlusID
+	INNER JOIN Turniir t ON v.TurniirID = t.TurniirID
+    WHERE o.OsalejaNimi = @OsalejaNimi;
+END;
+
+
+select * from Osaleja
+select * from Turniir
+EXEC vaaranOsaleja @OsalejaNimi = 'Steve1';	
+
+
+
+
+
+INSERT INTO Osaleja (OsalejaNimi, VoistlusID)
+VALUES ('Steve1', 6);
+
+select * from Turniir
+select * from Osaleja

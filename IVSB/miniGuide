@@ -1,0 +1,16 @@
+-- Watch data ('*' for all data
+-- select * FROM Guest, Booking, Payment, Room;
+
+-- watch data ('nameTable + row' for watch row.)
+-- select Guest.name from Guest
+
+-- watch data ('watch all data + where"search specific data"')
+-- select * from Room
+-- where Room.room_number = '105';
+
+-- watch > from > where
+-- select r.double_beds, r.room_number
+-- from Room as r -- exmaple python 
+-- where r.double_beds > 0
+
+

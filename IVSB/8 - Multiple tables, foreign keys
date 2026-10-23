@@ -55,6 +55,24 @@ AND r.room_number NOT IN (
     AND b.check_out > '2025-03-10'
 );
 */
+** ### oR use "CAST"**
+SELECT
+    r.room_number,
+    r.double_beds,
+    r.single_beds
+FROM Room AS r
+WHERE (r.double_beds * 2 + r.single_beds) >= 3
+AND r.room_number NOT IN (
+    SELECT b.room_id
+    FROM Booking AS b
+    WHERE CAST(b.check_in AS DATE) <= '2025-03-10'
+    AND CAST(b.check_out AS DATE) > '2025-03-10'
+);
+
+
+
+
+
 
 
 

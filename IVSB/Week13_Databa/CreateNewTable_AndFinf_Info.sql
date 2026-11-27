@@ -78,7 +78,10 @@ CREATE TABLE Genre (
 CREATE TABLE Movie (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     Title VARCHAR(100) NOT NULL,
-    ReleaseYear SMALLINT NOT NULL,
+    ReleaseYear SMALLINT NOT NULL, 
+		/*SMALLINT • SMALLINT — тип данных (малое целое число). 
+		Он занимает всего 2 байта памяти и вмещает значения от -32 768 до 32 767 (а если без знака — от 0 до 65 535). 
+		Этого более чем достаточно для хранения номера года, при этом база данных экономит место по сравнению с обычным INT.*/
     RatingID INT,
 
     FOREIGN KEY (RatingID)
